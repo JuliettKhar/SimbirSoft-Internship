@@ -1,0 +1,39 @@
+<template>
+  <el-row :gutter="20" type="flex" justify="start">
+    <el-col :sm="8" style="display: flex">
+      <el-date-picker
+        v-model="filters.pickerData"
+        type="year"
+        placeholder="Pick a year"
+        @change="searchYear"
+      ></el-date-picker>
+    </el-col>
+    <el-col :sm="16" style="display: flex">
+      <el-input v-model="filters.searchInput" placeholder="Type something" style="max-width: 591px">
+        <el-button slot="append" icon="el-icon-search" @click="searchData"></el-button>
+      </el-input>
+    </el-col>
+  </el-row>
+</template>
+
+<script>
+  export default {
+    name: 'LeaguesListFilters',
+    props: {
+      filters: {
+        type: Object,
+        required: true,
+      },
+    },
+    methods: {
+      searchData() {
+        this.$emit('search');
+      },
+      searchYear() {
+        this.$emit('pick');
+      },
+    },
+  };
+</script>
+
+<style scoped></style>

@@ -14,7 +14,6 @@
 }
 
 .el-menu {
-  padding: 24px 0;
   border-right: none !important;
   background-color: transparent;
 
@@ -30,6 +29,7 @@
   &-item span {
     display: inline-flex;
     text-align: left;
+    color: #909399;
   }
 
   &-vertical:not(.el-menu--collapse) {
@@ -46,12 +46,18 @@
   color: #333;
   line-height: 60px;
   text-align: left;
+
+  & i {
+    color: #fff;
+  }
 }
 
 .router-link {
-  &-active {
-    color: #409eff !important;
+  &-active,
+  &-exact-active{
+    color: #b3c0d1 !important;
   }
+
 }
 
 .el-tooltip {
@@ -63,4 +69,8 @@
   & div > span {
     color: #fff !important;
   }
+}
+
+.el-input {
+  width: 100% !important;
 }

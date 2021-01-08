@@ -19,10 +19,12 @@
 
       <el-container>
         <el-header>
-          <i :class="getCurrentIcon" @click="isCollapse = !isCollapse"></i>
+          <i :class="getCurrentIcon" style="cursor: pointer" @click="isCollapse = !isCollapse" />
         </el-header>
         <el-main>
-          <router-view />
+          <transition name="fade">
+            <router-view />
+          </transition>
         </el-main>
       </el-container>
     </el-container>
@@ -44,7 +46,8 @@
         return this.isCollapse ? 'el-icon-s-fold' : 'el-icon-s-unfold';
       },
       getMenuRoutes() {
-        return this.routes.filter(route => route.meta.title !== 'Home');
+        const availableRoutes = ['leagues-list'];
+        return this.routes.filter(route => availableRoutes.includes(route.name));
       },
     },
     methods: {

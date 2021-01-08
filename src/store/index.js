@@ -1,14 +1,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import leaguesList from './modules/leaguesList';
+import { leagues } from './modules/leagues';
+import { groups } from './modules/groups';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
   modules: {
-    leaguesList,
+    leagues,
+    groups,
   },
 });

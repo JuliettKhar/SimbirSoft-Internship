@@ -1,16 +1,18 @@
 <template>
   <div class="leagues-calendar">
     <el-row>
-      <el-col style="display: flex">
-        <el-date-picker
-          v-model="pickerData"
-          :disabledDate="disabledDate"
-          type="daterange"
-          start-placeholder="Start Date"
-          end-placeholder="End Date"
-          default-value="2010-10-01"
-        >
-        </el-date-picker>
+      <el-col>
+        <div class="leagues-calendar__wrapper">
+          <el-date-picker
+            v-model="pickerData"
+            :disabledDate="disabledDate"
+            type="daterange"
+            start-placeholder="Start Date"
+            end-placeholder="End Date"
+            default-value="2010-10-01"
+          >
+          </el-date-picker>
+        </div>
       </el-col>
     </el-row>
     <el-row>
@@ -28,7 +30,7 @@
 
 <script>
   export default {
-    name: 'GroupCalendar',
+    name: 'LeaguesCalendar',
     data() {
       const item = {
         date: '2016-05-02',
@@ -41,7 +43,14 @@
         tableData: Array(10).fill(item),
       };
     },
+    mounted() {
+      this.getLeagueData();
+    },
     methods: {
+      getLeagueData() {
+        const { id } = this.$route.params;
+        this.$store.dispatch('leagues/GET_LEAGUES_BY_ID', id);
+      },
       disabledDate() {},
     },
   };

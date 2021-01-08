@@ -1,14 +1,8 @@
-import Home from '../views/Home.vue';
-
 export const routes = [
   {
     path: '/',
     name: 'Home',
     redirect: { name: 'leagues-list' },
-    meta: {
-      title: 'Home',
-    },
-    component: Home,
   },
   {
     path: '/leagues-list',
@@ -19,27 +13,33 @@ export const routes = [
     },
     component: () => import(/* webpackChunkName: "leagues-list" */ '../views/LeaguesList.vue'),
   },
+  // {
+  //   path: '/groups-list',
+  //   name: 'groups-list',
+  //   meta: {
+  //     title: 'Список команд',
+  //     icon: 'el-icon-document',
+  //   },
+  //   component: () => import(/* webpackChunkName: "groups-list" */ '../views/GroupsList.vue'),
+  // },
   {
-    path: '/groups-list',
-    name: 'groups-list',
-    meta: {
-      title: 'Список команд',
-      icon: 'el-icon-document',
-    },
-    component: () => import(/* webpackChunkName: "groups-list" */ '../views/GroupsList.vue'),
-  },
-  {
-    path: '/leagues-calendar',
-    name: 'leagues-calendar',
-    meta: {
-      title: 'Календарь лиги',
-      icon: 'el-icon-set-up',
-    },
+    path: '/leagues-calendar/:id/overview',
+    name: 'leagues-overview',
     component: () =>
-      import(/* webpackChunkName: "leagues-calendar" */ '../views/LeaguesCalendar.vue'),
+      import(/* webpackChunkName: "leagues-calendar-overview" */ '../views/LeagueOverview'),
   },
+  // {
+  //   path: '/leagues-calendar/:id',
+  //   name: 'leagues-calendar',
+  //   meta: {
+  //     title: 'Календарь лиги',
+  //     icon: 'el-icon-set-up',
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "leagues-calendar" */ '../views/LeagueCalendar.vue'),
+  // },
   {
-    path: '/group-calendar',
+    path: '/group-calendar/:id',
     name: 'group-calendar',
     meta: {
       title: 'Календарь одной команды',
