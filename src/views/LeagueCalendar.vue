@@ -17,10 +17,44 @@
     </el-row>
     <el-row>
       <el-col>
-        <el-table :data="tableData">
-          <el-table-column prop="date" label="Date" width="140"></el-table-column>
-          <el-table-column prop="name" label="Name" width="120"></el-table-column>
-          <el-table-column prop="address" label="Address"></el-table-column>
+        <el-table :data="leagueCalendar">
+          <el-table-column prop="group" label="Group"></el-table-column>
+          <el-table-column prop="awayTeam" label="Away Team">
+            <template slot-scope="scope">
+              {{ scope.row.awayTeam.name }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="homeTeam" label="Home Team">
+            <template slot-scope="scope">
+              {{ scope.row.homeTeam.name }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="score" label="Winner" align="center">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.score.winner" type="success"
+                >{{ scope.row.score.winner }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="score" label="Score" align="center">
+            <template slot-scope="scope">
+              <p>{{ getScore(scope.row.score) }}</p>
+            </template>
+          </el-table-column>
+          <el-table-column prop="utcDate" label="Date" width="142px">
+            <template slot-scope="scope">
+              <span style="white-space: nowrap">
+                {{ formatDate(scope.row.utcDate) }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="status" label="Status">
+            <template slot-scope="scope">
+              <el-tag :type="scope.row.status === 'CANCELED' ? 'danger' : 'info'"
+                >{{ scope.row.status }}
+              </el-tag>
+            </template>
+          </el-table-column>
         </el-table>
         <el-pagination background layout="prev, pager, next" :total="100"></el-pagination>
       </el-col>
@@ -29,28 +63,23 @@
 </template>
 
 <script>
+  import { getScore, formatDate } from '../utils/functions';
+
   export default {
     name: 'LeaguesCalendar',
     data() {
-      const item = {
-        date: '2016-05-02',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      };
-
       return {
         pickerData: [new Date(), new Date()],
-        tableData: Array(10).fill(item),
       };
     },
-    mounted() {
-      this.getLeagueData();
+    computed: {
+      leagueCalendar() {
+        return this.$store.state.leagues.leagueCalendar?.matches || [];
+      },
     },
     methods: {
-      getLeagueData() {
-        const { id } = this.$route.params;
-        this.$store.dispatch('leagues/GET_LEAGUES_BY_ID', id);
-      },
+      getScore,
+      formatDate,
       disabledDate() {},
     },
   };

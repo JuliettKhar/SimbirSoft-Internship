@@ -60,6 +60,10 @@
 
 }
 
+.el-menu--collapse>.el-menu-item.is-active i {
+  color: #b3c0d1 !important;
+}
+
 .el-tooltip {
   display: inline-flex !important;
   align-items: center !important;

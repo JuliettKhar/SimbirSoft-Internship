@@ -12,7 +12,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="name" label="Name"></el-table-column>
-      <el-table-column prop="currentSeason" label="Current Season" width="142px">
+      <el-table-column prop="currentSeason" label="Current Season">
         <template slot-scope="scope">
           <ul class="leagues-list__season">
             <li v-if="formatSeasonDate(scope.row.currentSeason)">
@@ -25,18 +25,12 @@
           </ul>
         </template>
       </el-table-column>
-      <el-table-column prop="lastUpdated" label="Last Updated">
-        <template slot-scope="scope">
-          {{ formatDate(scope.row.lastUpdated) }}
-        </template>
-      </el-table-column>
       <el-table-column
         prop="numberOfAvailableSeasons"
         label="Available Seasons"
         width="90px"
       ></el-table-column>
     </el-table>
-    <el-pagination background layout="prev, pager, next" :total="100"></el-pagination>
   </div>
 </template>
 
@@ -62,17 +56,6 @@
           command,
           img,
         };
-      },
-      formatDate(date) {
-        if (!date) {
-          return '-';
-        }
-
-        const day = new Date(date).getDate();
-        const month = new Date(date).getMonth() + 1;
-        const year = new Date(date).getFullYear();
-
-        return `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
       },
       formatCode(code) {
         return code ? code : '-';
