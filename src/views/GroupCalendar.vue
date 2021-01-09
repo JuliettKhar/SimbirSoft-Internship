@@ -1,87 +1,113 @@
 <template>
   <div class="leagues-calendar">
     <el-row>
-      <el-col style="display: flex">
-        <el-date-picker
-          v-model="pickerData"
-          :disabledDate="disabledDate"
-          type="daterange"
-          start-placeholder="Start Date"
-          end-placeholder="End Date"
-          default-value="2010-10-01"
-        >
-        </el-date-picker>
+      <el-col>
+        <CalendarFilter :filters="filters" @pick="updateCalendar" @clear="clearPicker" />
       </el-col>
     </el-row>
     <el-row>
       <el-col>
-        <el-table :data="matches">
-          <el-table-column prop="group" label="Group" width="140"></el-table-column>
-          <el-table-column prop="awayTeam" label="Away Team" width="120">
-            <template slot-scope="scope">
-              {{ scope.row.awayTeam.name }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="homeTeam" label="Home Team">
-            <template slot-scope="scope">
-              {{ scope.row.homeTeam.name }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="score" label="Score">
-            <template slot-scope="scope">
-              <p>{{ getScore(scope.row.score) }}</p>
-            </template>
-          </el-table-column>
-          <el-table-column prop="status" label="Status">
-            <template slot-scope="scope">
-              <el-tag :type="scope.row.status === 'CANCELED' ? 'danger' : 'info'"
-                >{{ scope.row.status }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column prop="utcDate" label="Date">
-            <template slot-scope="scope">
-              <span style="white-space: nowrap">
-                {{ formatDate(scope.row.utcDate) }}
-              </span>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination background layout="prev, pager, next" :total="100"></el-pagination>
+        <TeamsCalendarTable :teams-data="matchesData" />
+        <el-pagination
+          :current-page.sync="currentPage"
+          background
+          layout="prev, pager, next"
+          :total="total"
+          hide-on-single-page
+          style="margin-top: 20px"
+          @current-change="onPaginationChange"
+        ></el-pagination>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-  import LeaguesListTable from '../components/LeaguesList/LeaguesListTable';
-  import { getScore, formatDate } from '../utils/functions';
+  import CalendarFilter from '@/components/Common/CalendarFilter';
+  import TeamsCalendarTable from '@/components/Teams/TeamsCalendarTable';
+  import { formatDate, updateQuery } from '@/utils/functions';
 
   export default {
     name: 'GroupCalendar',
     components: {
-      LeaguesListTable,
+      CalendarFilter,
+      TeamsCalendarTable,
     },
     data() {
+      const query = this.$route?.query || {};
+
       return {
-        pickerData: [new Date(), new Date()],
+        filters: {
+          pickerData: [query?.dateFrom || '', query?.dateTo || ''],
+          page: query?.page || 1,
+        },
+        currentPage: parseInt(query?.page || 1, 10),
+        limit: 10,
+        offset: 0,
+        matchesList: [],
       };
     },
     computed: {
       matches() {
         return this.$store.state.groups?.matches.matches || [];
       },
+      matchesData: {
+        get() {
+          return this.matchesList;
+        },
+        set(val) {
+          this.matchesList = val;
+        },
+      },
+      total() {
+        return this.matches.length;
+      },
     },
     mounted() {
       this.getTamData();
     },
     methods: {
-      getScore,
       formatDate,
-      disabledDate() {},
+      updateQuery,
       getTamData() {
         const { id } = this.$route.params;
-        this.$store.dispatch('groups/GET_MATCHES', id);
+        const { page, ...query } = this.$route.query;
+        this.$store
+          .dispatch('groups/GET_MATCHES', { id, params: { query } })
+          .then(() => this.initList());
+      },
+      updateCalendar() {
+        const query = Object.assign({}, this.updateQuery({ ...this.$route.query }));
+        const dateFrom = this.formatDate(this.filters.pickerData[0], false);
+        const dateTo = this.formatDate(this.filters.pickerData[1], false);
+        const { id } = this.$route.params;
+
+        query.dateFrom = dateFrom;
+        query.dateTo = dateTo;
+
+        this.$store.dispatch('groups/GET_MATCHES', { id, params: { dateFrom, dateTo } });
+        this.$router.push({ query });
+      },
+      initList() {
+        const start = (this.currentPage - 1) * this.limit;
+        const end = start + this.limit;
+
+        this.matchesData = this.matches.slice(start, end);
+      },
+      onPaginationChange() {
+        const query = Object.assign({}, this.updateQuery({ ...this.$route.query }));
+        query.page = this.currentPage;
+        const start = (this.currentPage - 1) * this.limit;
+        const end = start + this.limit;
+
+        this.matchesData = Object.assign([], this.matches.slice(start, end));
+        this.$router.push({ query });
+      },
+      clearPicker() {
+        const { dateFrom, dateTo, ...data } = this.$route.query;
+        const query = Object.assign({}, this.updateQuery({ dateFrom: '', dateTo: '', ...data }));
+        this.$router.push({ query });
+        this.filters.pickerData = ['', ''];
       },
     },
   };

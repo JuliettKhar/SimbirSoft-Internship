@@ -56,7 +56,7 @@
     methods: {
       getLeagueData() {
         const { id } = this.$route.params;
-        this.$store.dispatch('leagues/GET_LEAGUES_BY_ID', id);
+        this.$store.dispatch('leagues/GET_LEAGUES_BY_ID', { id });
       },
       handleClick(tab, event) {
         console.log(tab, event);

@@ -5,6 +5,7 @@
         v-model="filters.pickerData"
         type="year"
         placeholder="Pick a year"
+        :clearable="false"
         @change="searchYear"
       ></el-date-picker>
     </el-col>

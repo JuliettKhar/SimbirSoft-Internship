@@ -31,6 +31,16 @@
         width="90px"
       ></el-table-column>
     </el-table>
+    <el-pagination
+      :current-page.sync="currentPage"
+      background
+      layout="prev, pager, next"
+      :total="leaguesData.length"
+      hide-on-single-page
+      style="margin-top: 20px"
+      :current-change="onPaginationChange"
+    >
+    </el-pagination>
   </div>
 </template>
 
@@ -41,6 +51,23 @@
       leaguesData: {
         type: Array,
         default: () => [],
+      },
+      page: {
+        type: Number,
+        default: 1,
+      },
+    },
+    data() {
+      return {
+        paginatedData: [],
+        currentPage: 1,
+      };
+    },
+    watch: {
+      currentPage: {
+        handler(page) {
+          this.$emit('update:page', page);
+        },
       },
     },
     methods: {
@@ -62,6 +89,10 @@
       },
       onRowClick(row) {
         this.$router.push({ name: 'leagues-overview', params: { id: row.id } });
+      },
+      onPaginationChange() {
+        this.$emit('paginate');
+        console.log(1);
       },
     },
   };

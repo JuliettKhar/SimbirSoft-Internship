@@ -4,7 +4,7 @@
       <div class="">
         <el-row :gutter="20">
           <el-col>
-            <ListsFilters
+            <ListFilters
               :filters="filters"
               @search="searchLeagueEntity"
               @pick="searchLeagueByYear"
@@ -13,7 +13,11 @@
         </el-row>
         <el-row>
           <el-col>
-            <LeaguesListTable :leaguesData="leaguesListData" />
+            <LeaguesListTable
+              :leagues-data="leaguesListData"
+              :page.sync="currentPage"
+              @paginate="onPageChange"
+            />
           </el-col>
         </el-row>
       </div>
@@ -22,14 +26,14 @@
 </template>
 
 <script>
-  import ListsFilters from '@/components/LeaguesList/ListsFilters';
+  import ListFilters from '@/components/Common/ListFilters';
   import LeaguesListTable from '@/components/LeaguesList/LeaguesListTable';
-  import lunr from 'lunr';
+  import { updateQuery } from '@/utils/functions';
 
   export default {
     name: 'LeaguesList',
     components: {
-      ListsFilters,
+      ListFilters,
       LeaguesListTable,
     },
     data() {
@@ -41,7 +45,9 @@
           pickerData: query?.pickerData || null,
         },
         leaguesData: [],
-        idx: null,
+        currentPage: 1,
+        limit: 10,
+        offset: 0,
       };
     },
     computed: {
@@ -56,37 +62,33 @@
       this.getLeaguesData();
     },
     methods: {
+      updateQuery,
       async getLeaguesData() {
-        await this.$store.dispatch(`leagues/GET_LEAGUES_LIST`);
+        const params = {
+          plan: 'TIER_ONE',
+        };
+        await this.$store.dispatch(`leagues/GET_LEAGUES_LIST`, params);
 
         if (JSON.stringify(this.$route.query) !== '{}') {
           this.leaguesData = this.filterListByYear(this.$route.query.pickerData);
         } else {
           this.leaguesData = Object.assign([], this.leaguesList);
         }
-        // this.initIndex();
-      },
-      updateQuery() {
-        const availableProps = {};
-
-        for (const prop in this.filters) {
-          if (this.filters[prop]) {
-            availableProps[prop] = this.filters[prop];
-          }
-        }
-
-        return availableProps;
       },
       searchLeagueEntity() {
-        const query = this.updateQuery();
+        const query = this.updateQuery(this.filters);
+        const filtered = this.leaguesData.filter(league => {
+          return league.area.name.toLowerCase().includes(this.filters.searchInput.toLowerCase());
+        });
+
+        this.leaguesData = Object.assign([], filtered);
         this.$router.push({ query });
       },
       searchLeagueByYear() {
-        const query = Object.assign({}, this.updateQuery());
-        const year = String(new Date(this.filters.pickerData).getFullYear());
-        query.pickerData = year;
+        const query = Object.assign({}, this.updateQuery(this.filters));
+        query.pickerData = String(new Date(this.filters.pickerData).getFullYear());
 
-        const filteredList = this.filterListByYear(year);
+        const filteredList = this.filterListByYear(query.pickerData);
         this.leaguesData = Object.assign([], filteredList);
         this.$router.push({ query });
       },
@@ -101,19 +103,11 @@
           return false;
         });
       },
-      initIndex() {
-        this.idx = lunr(() => {
-          // this.ref('id');
-
-          this.leaguesListData.forEach(item => {
-            console.log(item);
-            for (const prop in item) {
-              const temp = {};
-              temp[prop] = item[prop];
-              this.add(temp);
-            }
-          });
-        });
+      onPageChange() {
+        this.offset = (this.currentPage - 1) * this.limit;
+        const start = this.offset;
+        const end = start + this.limit;
+        this.leaguesData = Object.assign([], this.leaguesData.slice(start, end));
       },
     },
   };

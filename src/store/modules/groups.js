@@ -13,13 +13,12 @@ const mutations = {
   },
 };
 const actions = {
-  async GET_TEAMS_LIST({ commit }, id) {
-    const { data } = await apiServiceTeams.getTeamsList(id);
-    console.log(data);
+  async GET_TEAMS_LIST({ commit }, payload) {
+    const { data } = await apiServiceTeams.getTeamsList(payload);
     commit('SET_TEAMS_LIST', data);
   },
-  async GET_MATCHES({ commit }, id) {
-    const { data } = await apiServiceTeams.getMatches(id);
+  async GET_MATCHES({ commit }, payload) {
+    const { data } = await apiServiceTeams.getMatches(payload);
     commit('SET_MATCHES', data);
   },
 };

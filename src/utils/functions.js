@@ -8,7 +8,7 @@ export function getScore(score) {
   }
 }
 
-export function formatDate(date) {
+export function formatDate(date, hasMinutes = true) {
   if (!date) {
     return '-';
   }
@@ -20,5 +20,17 @@ export function formatDate(date) {
   const hours = dateObj.getHours() < 10 ? `0${dateObj.getHours()}` : dateObj.getHours();
   const minutes = dateObj.getMinutes() < 10 ? `0${dateObj.getMinutes()}` : dateObj.getMinutes();
 
-  return `${year}-${month}-${day} ${hours}:${minutes}`;
+  return hasMinutes ? `${year}-${month}-${day} ${hours}:${minutes}` : `${year}-${month}-${day}`;
+}
+
+export function updateQuery(filters = {}) {
+  const availableProps = {};
+
+  for (const prop in filters) {
+    if (filters[prop]) {
+      availableProps[prop] = filters[prop];
+    }
+  }
+
+  return availableProps;
 }
