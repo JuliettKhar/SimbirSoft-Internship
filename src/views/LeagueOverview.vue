@@ -62,9 +62,7 @@
        *   this.$store.dispatch('leagues/GET_LEAGUES_BY_ID', { id });
        * },
        */
-      handleClick(tab, event) {
-        console.log(tab, event);
-      },
+      handleClick(tab, event) {},
     },
   };
 </script>

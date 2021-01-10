@@ -8,7 +8,7 @@ export const routes = [
     path: '/leagues-list',
     name: 'leagues-list',
     meta: {
-      title: 'Список лиг',
+      title: 'List of Leagues',
       icon: 'el-icon-trophy',
     },
     component: () =>

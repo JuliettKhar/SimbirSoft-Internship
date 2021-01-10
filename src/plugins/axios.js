@@ -1,5 +1,6 @@
 import qs from 'qs';
 import Axios from 'axios';
+import { Notification } from 'element-ui';
 
 const axios = Axios.create({
   baseURL: process.env.VUE_APP_API_URL,
@@ -23,6 +24,9 @@ axios.interceptors.request.use(
     return config;
   },
   error => {
+    Notification.error({
+      message: error.response.data.message,
+    });
     return Promise.reject(error);
   },
 );
@@ -32,6 +36,9 @@ axios.interceptors.response.use(
     return response;
   },
   error => {
+    Notification.error({
+      message: error.response.data.message,
+    });
     return Promise.reject(error.response.data);
   },
 );
