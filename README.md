@@ -1,4 +1,4 @@
-# ss-test
+# SimbirSoft-Internship
 
 ## Project setup
 ```

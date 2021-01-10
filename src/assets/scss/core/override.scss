@@ -1,0 +1,80 @@
+//override default styles
+
+.el-container {
+  height: inherit !important;
+}
+
+.el-aside {
+  height: inherit;
+  border-right: solid 1px #e6e6e6;
+  background-color: #fff;
+  color: #333;
+  width: auto !important;
+  min-width: 64px;
+}
+
+.el-menu {
+  border-right: none !important;
+  background-color: transparent;
+
+  &-item {
+    width: 100%;
+    align-items: center;
+    padding-left: 20px;
+    display: flex;
+    white-space: normal !important;
+    line-height: 18px !important;
+  }
+
+  &-item span {
+    display: inline-flex;
+    text-align: left;
+    color: #909399;
+  }
+
+  &-vertical:not(.el-menu--collapse) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 200px !important;
+    min-height: 400px;
+  }
+}
+
+.el-header {
+  background-color: #b3c0d1;
+  color: #333;
+  line-height: 60px;
+  text-align: left;
+
+  & i {
+    color: #fff;
+  }
+}
+
+.router-link {
+  &-active,
+  &-exact-active{
+    color: #b3c0d1 !important;
+  }
+
+}
+
+.el-menu--collapse>.el-menu-item.is-active i {
+  color: #b3c0d1 !important;
+}
+
+.el-tooltip {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.el-tooltip__popper.is-dark {
+  & div > span {
+    color: #fff !important;
+  }
+}
+
+.el-input {
+  width: 100% !important;
+}
