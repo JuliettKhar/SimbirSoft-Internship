@@ -29,7 +29,7 @@
 <script>
   import CalendarFilter from '@/components/Common/CalendarFilter';
   import TeamsCalendarTable from '@/components/Teams/TeamsCalendarTable';
-  import { formatDate, updateQuery } from '@/utils/functions';
+  import { formatDate, updateQuery, calculatePages } from '@/utils/functions';
 
   export default {
     name: 'GroupCalendar',
@@ -47,7 +47,6 @@
         },
         currentPage: parseInt(query?.page || 1, 10),
         limit: 10,
-        offset: 0,
         matchesList: [],
       };
     },
@@ -64,27 +63,34 @@
         },
       },
       total() {
-        return this.matches.length;
+        return this.$store.state.groups.matches?.count || 0;
       },
     },
     mounted() {
-      this.getTamData();
+      this.getTeamData();
+    },
+    watch: {
+      '$route.query': 'update',
     },
     methods: {
       formatDate,
       updateQuery,
-      getTamData() {
+      calculatePages,
+      update(val) {
+        const { id } = this.$route.params;
+        this.$store
+          .dispatch('groups/GET_MATCHES', { id, params: { ...val } })
+          .then(() => this.initList());
+      },
+      getTeamData() {
         const { id } = this.$route.params;
         const { page, ...query } = this.$route.query;
         this.$store
-          .dispatch('groups/GET_MATCHES', { id, params: { query } })
+          .dispatch('groups/GET_MATCHES', { id, params: { ...query } })
           .then(() => this.initList());
       },
       updateCalendar() {
-        const query = Object.assign(
-          {},
-          this.updateQuery({ ...this.$route.query }),
-        );
+        const query = this.updateQuery({ ...this.$route.query });
         const dateFrom = this.formatDate(this.filters.pickerData[0], false);
         const dateTo = this.formatDate(this.filters.pickerData[1], false);
         const { id } = this.$route.params;
@@ -99,29 +105,27 @@
         this.$router.push({ query });
       },
       initList() {
-        const start = (this.currentPage - 1) * this.limit;
-        const end = start + this.limit;
+        const { start, end } = this.calculatePages(
+          this.currentPage,
+          this.limit,
+        );
 
-        this.matchesData = this.matches.slice(start, end);
+        this.matchesData = Object.assign([], this.matches.slice(start, end));
       },
       onPaginationChange() {
-        const query = Object.assign(
-          {},
-          this.updateQuery({ ...this.$route.query }),
-        );
+        const query = this.updateQuery({ ...this.$route.query });
         query.page = this.currentPage;
-        const start = (this.currentPage - 1) * this.limit;
-        const end = start + this.limit;
+        const { start, end } = this.calculatePages(
+          this.currentPage,
+          this.limit,
+        );
 
         this.matchesData = Object.assign([], this.matches.slice(start, end));
         this.$router.push({ query });
       },
       clearPicker() {
         const { dateFrom, dateTo, ...data } = this.$route.query;
-        const query = Object.assign(
-          {},
-          this.updateQuery({ dateFrom: '', dateTo: '', ...data }),
-        );
+        const query = this.updateQuery({ dateFrom: '', dateTo: '', ...data });
         this.$router.push({ query });
         this.filters.pickerData = ['', ''];
       },

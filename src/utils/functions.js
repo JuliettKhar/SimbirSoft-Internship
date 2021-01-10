@@ -48,3 +48,13 @@ export function updateQuery(filters = {}) {
 
   return availableProps;
 }
+
+export function calculatePages(currentPage, limit) {
+  const start = (currentPage - 1) * limit;
+  const end = start + limit;
+
+  return {
+    start,
+    end,
+  };
+}
