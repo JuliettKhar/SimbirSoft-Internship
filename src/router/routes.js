@@ -11,7 +11,8 @@ export const routes = [
       title: 'Список лиг',
       icon: 'el-icon-trophy',
     },
-    component: () => import(/* webpackChunkName: "leagues-list" */ '../views/LeaguesList.vue'),
+    component: () =>
+      import(/* webpackChunkName: "leagues-list" */ '../views/LeaguesList.vue'),
   },
   // {
   //   path: '/groups-list',
@@ -26,7 +27,9 @@ export const routes = [
     path: '/leagues-calendar/:id/overview',
     name: 'leagues-overview',
     component: () =>
-      import(/* webpackChunkName: "leagues-calendar-overview" */ '../views/LeagueOverview'),
+      import(
+        /* webpackChunkName: "leagues-calendar-overview" */ '../views/LeagueOverview'
+      ),
   },
   // {
   //   path: '/leagues-calendar/:id',
@@ -45,6 +48,9 @@ export const routes = [
       title: 'Календарь одной команды',
       icon: 'el-icon-s-grid',
     },
-    component: () => import(/* webpackChunkName: "group-calendar" */ '../views/GroupCalendar.vue'),
+    component: () =>
+      import(
+        /* webpackChunkName: "group-calendar" */ '../views/GroupCalendar.vue'
+      ),
   },
 ];

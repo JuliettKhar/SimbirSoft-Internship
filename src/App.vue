@@ -3,8 +3,14 @@
     <el-container>
       <el-aside>
         <el-menu class="el-menu-vertical" :collapse="isCollapse">
-          <el-menu-item v-for="(route, index) in getMenuRoutes" :index="String(index + 1)">
-            <router-link :to="{ name: route.name }" :class="isRouterLinkActive(route.name)">
+          <el-menu-item
+            v-for="(route, index) in getMenuRoutes"
+            :index="String(index + 1)"
+          >
+            <router-link
+              :to="{ name: route.name }"
+              :class="isRouterLinkActive(route.name)"
+            >
               <i :class="[route.meta.icon, isRouterLinkActive(route.name)]"></i>
             </router-link>
             <span
@@ -19,7 +25,11 @@
 
       <el-container>
         <el-header>
-          <i :class="getCurrentIcon" style="cursor: pointer" @click="isCollapse = !isCollapse" />
+          <i
+            :class="getCurrentIcon"
+            style="cursor: pointer"
+            @click="isCollapse = !isCollapse"
+          />
         </el-header>
         <el-main>
           <transition name="fade">
@@ -47,7 +57,9 @@
       },
       getMenuRoutes() {
         const availableRoutes = ['leagues-list'];
-        return this.routes.filter(route => availableRoutes.includes(route.name));
+        return this.routes.filter(route =>
+          availableRoutes.includes(route.name),
+        );
       },
     },
     methods: {

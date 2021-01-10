@@ -13,7 +13,9 @@
     </el-table-column>
     <el-table-column prop="score" label="Winner" align="center">
       <template slot-scope="scope">
-        <el-tag v-if="scope.row.score.winner" type="success">{{ scope.row.score.winner }} </el-tag>
+        <el-tag v-if="scope.row.score.winner" type="success"
+          >{{ scope.row.score.winner }}
+        </el-tag>
       </template>
     </el-table-column>
     <el-table-column prop="score" label="Score" align="center">

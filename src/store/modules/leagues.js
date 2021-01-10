@@ -15,7 +15,6 @@ const mutations = {
   SET_LEAGUE_OVERVIEW(state, competition) {
     state.leagueOverview = competition;
   },
-  SET_FILTERED_LEAGUE_DATA(state, query) {},
 };
 const actions = {
   async GET_LEAGUES_LIST({ commit }, payload) {

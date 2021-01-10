@@ -16,11 +16,16 @@
         <template slot-scope="scope">
           <ul class="leagues-list__season">
             <li v-if="formatSeasonDate(scope.row.currentSeason)">
-              <span>Season: </span>{{ formatSeasonDate(scope.row.currentSeason) }}
+              <span>Season: </span
+              >{{ formatSeasonDate(scope.row.currentSeason) }}
             </li>
             <li v-if="formatWinner(scope.row.currentSeason).command">
-              <span>Winner: </span>{{ formatWinner(scope.row.currentSeason).command }}
-              <img :src="formatWinner(scope.row.currentSeason).img" alt="flag" />
+              <span>Winner: </span
+              >{{ formatWinner(scope.row.currentSeason).command }}
+              <img
+                :src="formatWinner(scope.row.currentSeason).img"
+                alt="flag"
+              />
             </li>
           </ul>
         </template>
@@ -31,16 +36,6 @@
         width="90px"
       ></el-table-column>
     </el-table>
-    <el-pagination
-      :current-page.sync="currentPage"
-      background
-      layout="prev, pager, next"
-      :total="leaguesData.length"
-      hide-on-single-page
-      style="margin-top: 20px"
-      :current-change="onPaginationChange"
-    >
-    </el-pagination>
   </div>
 </template>
 
@@ -90,10 +85,12 @@
       onRowClick(row) {
         this.$router.push({ name: 'leagues-overview', params: { id: row.id } });
       },
-      onPaginationChange() {
-        this.$emit('paginate');
-        console.log(1);
-      },
+      /*
+       * onPaginationChange() {
+       *   this.$emit('paginate');
+       *   console.log(1);
+       * },
+       */
     },
   };
 </script>

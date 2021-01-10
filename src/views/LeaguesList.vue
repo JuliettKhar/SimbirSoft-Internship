@@ -6,6 +6,7 @@
           <el-col>
             <ListFilters
               :filters="filters"
+              input-placeholder="Type area..."
               @search="searchLeagueEntity"
               @pick="searchLeagueByYear"
             />
@@ -16,8 +17,17 @@
             <LeaguesListTable
               :leagues-data="leaguesListData"
               :page.sync="currentPage"
-              @paginate="onPageChange"
             />
+            <el-pagination
+              :current-page.sync="currentPage"
+              background
+              layout="prev, pager, next"
+              :total="total"
+              hide-on-single-page
+              style="margin-top: 20px"
+              @current-change="onPaginationChange"
+            >
+            </el-pagination>
           </el-col>
         </el-row>
       </div>
@@ -43,19 +53,27 @@
         filters: {
           searchInput: query?.searchInput || null,
           pickerData: query?.pickerData || null,
+          page: query?.page || 1,
         },
         leaguesData: [],
-        currentPage: 1,
+        currentPage: parseInt(query?.page || 1, 10),
         limit: 10,
-        offset: 0,
       };
     },
     computed: {
       leaguesList() {
         return this.$store.state.leagues?.leaguesList || [];
       },
-      leaguesListData() {
-        return this.leaguesData;
+      leaguesListData: {
+        get() {
+          return this.leaguesData;
+        },
+        set(val) {
+          this.leaguesData = val;
+        },
+      },
+      total() {
+        return this.leaguesList.length;
       },
     },
     mounted() {
@@ -63,22 +81,27 @@
     },
     methods: {
       updateQuery,
-      async getLeaguesData() {
-        const params = {
-          plan: 'TIER_ONE',
-        };
-        await this.$store.dispatch(`leagues/GET_LEAGUES_LIST`, params);
+      initList() {
+        const start = (this.currentPage - 1) * this.limit;
+        const end = start + this.limit;
 
-        if (JSON.stringify(this.$route.query) !== '{}') {
-          this.leaguesData = this.filterListByYear(this.$route.query.pickerData);
-        } else {
-          this.leaguesData = Object.assign([], this.leaguesList);
-        }
+        this.leaguesData = this.leaguesList.slice(start, end);
+      },
+      getLeaguesData() {
+        this.$store
+          .dispatch(`leagues/GET_LEAGUES_LIST`, {
+            params: {
+              plan: 'TIER_ONE',
+            },
+          })
+          .then(() => this.initList());
       },
       searchLeagueEntity() {
         const query = this.updateQuery(this.filters);
         const filtered = this.leaguesData.filter(league => {
-          return league.area.name.toLowerCase().includes(this.filters.searchInput.toLowerCase());
+          return league.area.name
+            .toLowerCase()
+            .includes(this.filters.searchInput.toLowerCase());
         });
 
         this.leaguesData = Object.assign([], filtered);
@@ -86,7 +109,9 @@
       },
       searchLeagueByYear() {
         const query = Object.assign({}, this.updateQuery(this.filters));
-        query.pickerData = String(new Date(this.filters.pickerData).getFullYear());
+        query.pickerData = String(
+          new Date(this.filters.pickerData).getFullYear(),
+        );
 
         const filteredList = this.filterListByYear(query.pickerData);
         this.leaguesData = Object.assign([], filteredList);
@@ -103,11 +128,20 @@
           return false;
         });
       },
-      onPageChange() {
-        this.offset = (this.currentPage - 1) * this.limit;
-        const start = this.offset;
+      onPaginationChange() {
+        const query = Object.assign(
+          {},
+          this.updateQuery({ ...this.$route.query }),
+        );
+        query.page = this.currentPage;
+        const start = (this.currentPage - 1) * this.limit;
         const end = start + this.limit;
-        this.leaguesData = Object.assign([], this.leaguesData.slice(start, end));
+
+        this.leaguesListData = Object.assign(
+          [],
+          this.leaguesList.slice(start, end),
+        );
+        this.$router.push({ query });
       },
     },
   };

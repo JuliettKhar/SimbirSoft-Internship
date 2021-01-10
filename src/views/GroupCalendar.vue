@@ -2,7 +2,11 @@
   <div class="leagues-calendar">
     <el-row>
       <el-col>
-        <CalendarFilter :filters="filters" @pick="updateCalendar" @clear="clearPicker" />
+        <CalendarFilter
+          :filters="filters"
+          @pick="updateCalendar"
+          @clear="clearPicker"
+        />
       </el-col>
     </el-row>
     <el-row>
@@ -77,7 +81,10 @@
           .then(() => this.initList());
       },
       updateCalendar() {
-        const query = Object.assign({}, this.updateQuery({ ...this.$route.query }));
+        const query = Object.assign(
+          {},
+          this.updateQuery({ ...this.$route.query }),
+        );
         const dateFrom = this.formatDate(this.filters.pickerData[0], false);
         const dateTo = this.formatDate(this.filters.pickerData[1], false);
         const { id } = this.$route.params;
@@ -85,7 +92,10 @@
         query.dateFrom = dateFrom;
         query.dateTo = dateTo;
 
-        this.$store.dispatch('groups/GET_MATCHES', { id, params: { dateFrom, dateTo } });
+        this.$store.dispatch('groups/GET_MATCHES', {
+          id,
+          params: { dateFrom, dateTo },
+        });
         this.$router.push({ query });
       },
       initList() {
@@ -95,7 +105,10 @@
         this.matchesData = this.matches.slice(start, end);
       },
       onPaginationChange() {
-        const query = Object.assign({}, this.updateQuery({ ...this.$route.query }));
+        const query = Object.assign(
+          {},
+          this.updateQuery({ ...this.$route.query }),
+        );
         query.page = this.currentPage;
         const start = (this.currentPage - 1) * this.limit;
         const end = start + this.limit;
@@ -105,7 +118,10 @@
       },
       clearPicker() {
         const { dateFrom, dateTo, ...data } = this.$route.query;
-        const query = Object.assign({}, this.updateQuery({ dateFrom: '', dateTo: '', ...data }));
+        const query = Object.assign(
+          {},
+          this.updateQuery({ dateFrom: '', dateTo: '', ...data }),
+        );
         this.$router.push({ query });
         this.filters.pickerData = ['', ''];
       },
