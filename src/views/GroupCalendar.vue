@@ -33,10 +33,7 @@
 
   export default {
     name: 'GroupCalendar',
-    components: {
-      CalendarFilter,
-      TeamsCalendarTable,
-    },
+    components: { CalendarFilter, TeamsCalendarTable },
     data() {
       const query = this.$route?.query || {};
 

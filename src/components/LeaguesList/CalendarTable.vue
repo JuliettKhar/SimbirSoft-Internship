@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="calendarData">
+  <el-table v-loading="loading" :data="calendarData">
     <el-table-column prop="group" label="Group"></el-table-column>
     <el-table-column prop="awayTeam" label="Away Team">
       <template slot-scope="scope">
@@ -49,6 +49,10 @@
       calendarData: {
         type: Array,
         default: () => [],
+      },
+      loading: {
+        type: Boolean,
+        default: false,
       },
     },
     methods: {

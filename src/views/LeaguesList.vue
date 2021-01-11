@@ -9,15 +9,13 @@
               input-placeholder="Type area..."
               @search="searchLeagueEntity"
               @pick="searchLeagueByYear"
+              @clear="clearPicker"
             />
           </el-col>
         </el-row>
         <el-row>
           <el-col>
-            <LeaguesListTable
-              :leagues-data="leaguesListData"
-              :page.sync="currentPage"
-            />
+            <LeaguesListTable :leagues-data="leaguesListData" />
             <el-pagination
               :current-page.sync="currentPage"
               background
@@ -104,7 +102,7 @@
             .includes(this.filters.searchInput.toLowerCase());
         });
 
-        this.leaguesData = Object.assign([], filtered);
+        this.leaguesListData = Object.assign([], filtered);
         this.$router.push({ query });
       },
       searchLeagueByYear() {
@@ -142,6 +140,12 @@
           this.leaguesList.slice(start, end),
         );
         this.$router.push({ query });
+      },
+      clearPicker() {
+        this.$router.push({});
+        this.filters.pickerData = ['', ''];
+        this.filters.searchInput = '';
+        this.getLeaguesData();
       },
     },
   };

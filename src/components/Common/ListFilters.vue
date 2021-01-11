@@ -22,6 +22,11 @@
         ></el-button>
       </el-input>
     </el-col>
+    <el-col :span="3">
+      <el-button type="info" style="margin-left: 10px" @click="$emit('clear')"
+        >Clear</el-button
+      >
+    </el-col>
   </el-row>
 </template>
 

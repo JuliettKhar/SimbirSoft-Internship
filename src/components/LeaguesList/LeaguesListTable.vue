@@ -1,8 +1,19 @@
 <template>
-  <div>
+  <div class="leagues-list">
     <el-table :data="leaguesData" stripe fit @row-click="onRowClick">
-      <el-table-column prop="area" label="Area">
+      <el-table-column prop="area" label="Area" class-name="leagues-list__area">
         <template slot-scope="scope">
+          <span v-if="!scope.row.area.ensignUrl" style="margin-right: 6px">
+            <CountryFlag
+              size="small"
+              :country="getCountryCode(scope.row.area.countryCode)"
+            />
+          </span>
+          <img
+            v-else
+            class="leagues-list__flag"
+            :src="scope.row.area.ensignUrl"
+          />
           <span>{{ scope.row.area.name }}</span>
         </template>
       </el-table-column>
@@ -40,6 +51,8 @@
 </template>
 
 <script>
+  import CountryFlag from 'vue-country-flag';
+
   export default {
     name: 'LeaguesTable',
     props: {
@@ -47,23 +60,14 @@
         type: Array,
         default: () => [],
       },
-      page: {
-        type: Number,
-        default: 1,
-      },
+    },
+    components: {
+      CountryFlag,
     },
     data() {
       return {
         paginatedData: [],
-        currentPage: 1,
       };
-    },
-    watch: {
-      currentPage: {
-        handler(page) {
-          this.$emit('update:page', page);
-        },
-      },
     },
     methods: {
       formatSeasonDate(season) {
@@ -85,12 +89,9 @@
       onRowClick(row) {
         this.$router.push({ name: 'leagues-overview', params: { id: row.id } });
       },
-      /*
-       * onPaginationChange() {
-       *   this.$emit('paginate');
-       *   console.log(1);
-       * },
-       */
+      getCountryCode(country) {
+        return country.toLowerCase();
+      },
     },
   };
 </script>
@@ -123,6 +124,17 @@
         width: 20px;
         height: auto;
       }
+    }
+
+    &__flag {
+      margin-right: 6px;
+      width: 15px;
+      height: 15px;
+    }
+
+    ::v-deep &__area .cell {
+      display: flex;
+      align-items: center;
     }
   }
 </style>

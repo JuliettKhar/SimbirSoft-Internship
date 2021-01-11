@@ -1,18 +1,23 @@
 <template>
-  <div class="groups-list__teams">
-    <div
-      v-for="(team, index) in groupsList"
-      :key="index"
-      class="groups-list__image-wrapper"
-      @click="onTeamClick(team.id)"
-    >
-      <img
-        :src="team.crestUrl"
-        :alt="team.shortName"
-        class="groups-list__image"
-      />
-      <span>{{ team.shortName }}</span>
+  <div class="groups-list">
+    <div v-if="!loading" class="groups-list__teams">
+      <div
+        v-for="(team, index) in groupsList"
+        :key="index"
+        class="groups-list__image-wrapper"
+        @click="onTeamClick(team.id)"
+      >
+        <img
+          :src="team.crestUrl"
+          :alt="team.shortName"
+          class="groups-list__image"
+        />
+        <span>{{ team.shortName }}</span>
+      </div>
     </div>
+    <template v-else>
+      <p>No Data</p>
+    </template>
   </div>
 </template>
 
@@ -23,6 +28,10 @@
       groupsList: {
         type: Array,
         default: () => [],
+      },
+      loading: {
+        type: Boolean,
+        default: false,
       },
     },
     methods: {
@@ -54,6 +63,10 @@
       grid-template-columns: repeat(4, 1fr);
       grid-template-rows: auto;
       grid-gap: 1rem;
+    }
+
+    p {
+      color: #c0c4cc;
     }
   }
 </style>

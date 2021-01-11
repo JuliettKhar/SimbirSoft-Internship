@@ -30,6 +30,7 @@
 <script>
   import LeagueCalendar from './LeagueCalendar';
   import GroupsList from './GroupsList';
+  import { updateQuery } from '../utils/functions';
 
   export default {
     name: 'LeaguesOverview',
@@ -39,7 +40,7 @@
     },
     data() {
       return {
-        activeName: 'calendar',
+        activeName: 'teams',
       };
     },
     computed: {
@@ -50,19 +51,18 @@
         return this.$store.state.leagues.leagueOverview?.area?.name || '';
       },
     },
-    /*
-     * async mounted() {
-     *   await this.getLeagueData();
-     * },
-     */
     methods: {
-      /*
-       * getLeagueData() {
-       *   const { id } = this.$route.params;
-       *   this.$store.dispatch('leagues/GET_LEAGUES_BY_ID', { id });
-       * },
-       */
-      handleClick(tab, event) {},
+      updateQuery,
+      clearFilters() {
+        if (JSON.stringify(this.$route.query) === '{}') {
+          return;
+        } else {
+          this.$router.push({ query: {} });
+        }
+      },
+      handleClick() {
+        this.clearFilters();
+      },
     },
   };
 </script>
