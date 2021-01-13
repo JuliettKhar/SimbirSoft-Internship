@@ -84,31 +84,18 @@
           .finally(() => (this.loading = false));
       },
       getLeagueData() {
-        const { id } = this.$route.params;
         const { page, ...query } = this.$route.query;
-        this.loading = true;
-
-        this.$store
-          .dispatch('leagues/GET_LEAGUES_BY_ID', { id, params: { ...query } })
-          .then(() => this.initList())
-          .finally(() => (this.loading = false));
+        this.update(query);
       },
       updateCalendar() {
         const query = this.updateQuery({ ...this.$route.query });
         const dateFrom = this.formatDate(this.filters.pickerData[0], false);
         const dateTo = this.formatDate(this.filters.pickerData[1], false);
-        const { id } = this.$route.params;
 
         query.dateFrom = dateFrom;
         query.dateTo = dateTo;
-        this.loading = true;
 
-        this.$store
-          .dispatch('leagues/GET_LEAGUES_BY_ID', {
-            id,
-            params: { dateFrom, dateTo },
-          })
-          .finally(() => (this.loading = false));
+        this.update({ dateFrom, dateTo });
         this.$router.push({ query });
       },
       initList() {
@@ -139,7 +126,6 @@
       clearPicker() {
         this.$router.push({});
         this.filters.pickerData = ['', ''];
-        this.filters.searchInput = '';
         this.getLeagueData();
       },
     },

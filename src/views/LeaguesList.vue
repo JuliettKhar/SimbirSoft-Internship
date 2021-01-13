@@ -7,7 +7,7 @@
             <ListFilters
               :filters="filters"
               input-placeholder="Type area..."
-              @search="searchLeagueEntity"
+              @search="searchLeagueByName"
               @pick="searchLeagueByYear"
               @clear="clearPicker"
             />
@@ -15,7 +15,10 @@
         </el-row>
         <el-row>
           <el-col>
-            <LeaguesListTable :leagues-data="leaguesListData" />
+            <LeaguesListTable
+              :leagues-data="leaguesListData"
+              :loading="loading"
+            />
             <el-pagination
               :current-page.sync="currentPage"
               background
@@ -56,6 +59,7 @@
         leaguesData: [],
         currentPage: parseInt(query?.page || 1, 10),
         limit: 10,
+        loading: false,
       };
     },
     computed: {
@@ -75,26 +79,28 @@
       },
     },
     mounted() {
-      this.getLeaguesData();
+      this.update();
     },
     methods: {
       updateQuery,
-      initList() {
-        const start = (this.currentPage - 1) * this.limit;
-        const end = start + this.limit;
-
-        this.leaguesData = this.leaguesList.slice(start, end);
-      },
-      getLeaguesData() {
+      update() {
+        this.loading = true;
         this.$store
           .dispatch(`leagues/GET_LEAGUES_LIST`, {
             params: {
               plan: 'TIER_ONE',
             },
           })
-          .then(() => this.initList());
+          .then(() => this.initList())
+          .finally(() => (this.loading = false));
       },
-      searchLeagueEntity() {
+      initList() {
+        const start = (this.currentPage - 1) * this.limit;
+        const end = start + this.limit;
+
+        this.leaguesData = this.leaguesList.slice(start, end);
+      },
+      searchLeagueByName() {
         const query = this.updateQuery(this.filters);
         const filtered = this.leaguesData.filter(league => {
           return league.area.name
@@ -143,9 +149,9 @@
       },
       clearPicker() {
         this.$router.push({});
-        this.filters.pickerData = ['', ''];
+        this.filters.pickerData = '';
         this.filters.searchInput = '';
-        this.getLeaguesData();
+        this.update();
       },
     },
   };

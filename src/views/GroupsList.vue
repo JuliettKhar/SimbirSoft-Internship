@@ -12,7 +12,7 @@
     </el-row>
     <el-row>
       <el-col>
-        <TeamsGroupTable :groups-list="groupsListData" :loading="loading" />
+        <TeamsGroupTable :groups-list="groupsListData" />
         <el-pagination
           :current-page.sync="currentPage"
           background
@@ -46,7 +46,6 @@
         groupsData: [],
         currentPage: parseInt(query?.pageT || 1, 10),
         limit: 12,
-        loading: false,
       };
     },
     computed: {
@@ -62,7 +61,7 @@
         },
       },
       total() {
-        return this.$store.state.groups.teamsList?.count;
+        return this.$store.state.groups.teamsList?.count || 0;
       },
     },
     mounted() {
@@ -79,21 +78,13 @@
       calculatePages,
       update(val) {
         const { id } = this.$route.params;
-        this.loading = true;
         this.$store
           .dispatch('groups/GET_TEAMS_LIST', { id, params: { ...val } })
-          .then(() => this.initList())
-          .finally(() => (this.loading = false));
+          .then(() => this.initList());
       },
       getGroupsListData() {
-        const { id } = this.$route.params;
         const { pageT, ...query } = this.$route.query;
-        this.loading = true;
-
-        this.$store
-          .dispatch('groups/GET_TEAMS_LIST', { id, params: { ...query } })
-          .then(() => this.initList())
-          .finally(() => (this.loading = false));
+        this.update(query);
       },
       initList() {
         const { start, end } = this.calculatePages(
@@ -108,7 +99,7 @@
       },
       searchTeamsByName() {
         const query = Object.assign({}, this.updateQuery(this.filters));
-        this.groupsList.filter(group =>
+        this.groupsListData = this.groupsList.filter(group =>
           group.shortName
             .toLowerCase()
             .includes(this.filters.searchInput.toLowerCase()),
@@ -117,16 +108,9 @@
       },
       searchTeamsByYear() {
         const query = this.updateQuery({ ...this.$route.query });
-        const { id } = this.$route.params;
         query.season = String(new Date(this.filters.pickerData).getFullYear());
-        const params = {
-          season: query.season,
-        };
-        this.loading = true;
 
-        this.$store
-          .dispatch('groups/GET_TEAMS_LIST', { id, params })
-          .finally(() => (this.loading = false));
+        this.update({ season: query.season });
         this.$router.push({ query });
       },
       onPaginationChange() {
@@ -145,9 +129,9 @@
       },
       clearPicker() {
         this.$router.push({});
-        this.filters.pickerData = ['', ''];
+        this.filters.pickerData = '';
         this.filters.searchInput = '';
-        this.getGroupsListData();
+        this.update({});
       },
     },
   };

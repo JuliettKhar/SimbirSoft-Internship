@@ -1,6 +1,12 @@
 <template>
   <div class="leagues-list">
-    <el-table :data="leaguesData" stripe fit @row-click="onRowClick">
+    <el-table
+      v-loading="loading"
+      :data="leaguesData"
+      stripe
+      fit
+      @row-click="onRowClick"
+    >
       <el-table-column prop="area" label="Area" class-name="leagues-list__area">
         <template slot-scope="scope">
           <span v-if="!scope.row.area.ensignUrl" style="margin-right: 6px">
@@ -59,6 +65,10 @@
       leaguesData: {
         type: Array,
         default: () => [],
+      },
+      loading: {
+        type: Boolean,
+        default: false,
       },
     },
     components: {

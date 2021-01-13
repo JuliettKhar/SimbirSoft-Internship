@@ -11,7 +11,7 @@
     </el-row>
     <el-row>
       <el-col>
-        <TeamsCalendarTable :teams-data="matchesData" />
+        <TeamsCalendarTable :teams-data="matchesData" :loading="loading" />
         <el-pagination
           :current-page.sync="currentPage"
           background
@@ -45,6 +45,7 @@
         currentPage: parseInt(query?.page || 1, 10),
         limit: 10,
         matchesList: [],
+        loading: false,
       };
     },
     computed: {
@@ -75,31 +76,28 @@
       calculatePages,
       update(val) {
         const { id } = this.$route.params;
+        this.loading = true;
+
         this.$store
           .dispatch('groups/GET_MATCHES', { id, params: { ...val } })
-          .then(() => this.initList());
+          .then(() => this.initList())
+          .finally(() => (this.loading = false));
       },
       getTeamData() {
-        const { id } = this.$route.params;
         const { page, ...query } = this.$route.query;
-        this.$store
-          .dispatch('groups/GET_MATCHES', { id, params: { ...query } })
-          .then(() => this.initList());
+        this.update(query);
       },
       updateCalendar() {
         const query = this.updateQuery({ ...this.$route.query });
         const dateFrom = this.formatDate(this.filters.pickerData[0], false);
         const dateTo = this.formatDate(this.filters.pickerData[1], false);
-        const { id } = this.$route.params;
 
         query.dateFrom = dateFrom;
         query.dateTo = dateTo;
 
-        this.$store.dispatch('groups/GET_MATCHES', {
-          id,
-          params: { dateFrom, dateTo },
-        });
+        this.update({ dateFrom, dateTo });
         this.$router.push({ query });
+        this.initList();
       },
       initList() {
         const { start, end } = this.calculatePages(
@@ -125,6 +123,7 @@
         const query = this.updateQuery({ dateFrom: '', dateTo: '', ...data });
         this.$router.push({ query });
         this.filters.pickerData = ['', ''];
+        this.update(query);
       },
     },
   };

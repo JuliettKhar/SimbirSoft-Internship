@@ -1,6 +1,6 @@
 <template>
   <div class="groups-list">
-    <div v-if="!loading" class="groups-list__teams">
+    <div v-if="groupsList.length" class="groups-list__teams">
       <div
         v-for="(team, index) in groupsList"
         :key="index"
@@ -28,10 +28,6 @@
       groupsList: {
         type: Array,
         default: () => [],
-      },
-      loading: {
-        type: Boolean,
-        default: false,
       },
     },
     methods: {
