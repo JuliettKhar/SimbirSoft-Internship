@@ -5,20 +5,25 @@
         <div class="league-overview-img"></div>
       </el-col>
       <el-col :md="12">
-        <p>
-          <el-tag size="medium">{{ leagueOverview.name }}</el-tag>
-        </p>
-        <p>{{ getAreaName }}</p>
-        <p>{{ leagueOverview.startDate }}</p>
+        <template v-if="!isOverviewLoading">
+          <i class="el-icon-loading"> </i>
+        </template>
+        <template v-else>
+          <p>
+            <el-tag size="medium">{{ leagueOverview.name }}</el-tag>
+          </p>
+          <p>{{ getAreaName }}</p>
+          <p>{{ leagueOverview.startDate }}</p>
+        </template>
       </el-col>
     </el-row>
     <el-row>
       <el-col>
-        <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="Teams" name="teams">
+        <el-tabs v-model="activeTabName" @tab-click="changeTab">
+          <el-tab-pane label="Teams" name="groups-list">
             <GroupsList />
           </el-tab-pane>
-          <el-tab-pane label="Calendar" name="calendar">
+          <el-tab-pane label="Calendar" name="leagues-calendar">
             <LeagueCalendar />
           </el-tab-pane>
         </el-tabs>
@@ -39,8 +44,10 @@
       GroupsList,
     },
     data() {
+      const activeName = this.$route?.name || 'league-calendar';
+
       return {
-        activeName: 'teams',
+        activeName,
       };
     },
     computed: {
@@ -49,6 +56,17 @@
       },
       getAreaName() {
         return this.$store.state.leagues.leagueOverview?.area?.name || '';
+      },
+      isOverviewLoading() {
+        return this.leagueOverview && this.getAreaName;
+      },
+      activeTabName: {
+        get() {
+          return this.activeName;
+        },
+        set(value) {
+          this.activeName = value;
+        },
       },
     },
     methods: {
@@ -62,6 +80,11 @@
       },
       handleClick() {
         this.clearFilters();
+      },
+      changeTab({ name }) {
+        this.activeName = name;
+        this.$router.push({ name });
+        this.handleClick();
       },
     },
   };

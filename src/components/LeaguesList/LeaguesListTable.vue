@@ -97,7 +97,7 @@
         return code ? code : '-';
       },
       onRowClick(row) {
-        this.$router.push({ name: 'leagues-overview', params: { id: row.id } });
+        this.$router.push({ name: 'groups-list', params: { id: row.id } });
       },
       getCountryCode(country) {
         return country.toLowerCase();
