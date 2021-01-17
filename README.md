@@ -3,10 +3,12 @@ Use Vuex, Vue-router, axios, Element-ui
 API: www.football-data.org free plan
 
 routes:
+```
  /leagues-list - fontend filtration
  /groups-list/ - query { season }
  /leagues-calendar/:id - query { dateFrom, dateTo }
  /group-calendar/:id - query { dateFrom, dateTo }
+ 
 ```
 Demo: https://juliettkhar.github.io/SimbirSoft-Internship
 ```
