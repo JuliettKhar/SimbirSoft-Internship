@@ -1,6 +1,8 @@
 # SimbirSoft-Internship
 Use Vuex, Vue-router, axios, Element-ui
+```
 Demo: https://juliettkhar.github.io/SimbirSoft-Internship
+```
 
 ## Project setup
 ```
