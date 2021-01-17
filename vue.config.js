@@ -1,7 +1,8 @@
 const path = require('path');
 
 module.exports = {
-  publicPath: '/',
+  publicPath:
+    process.env.NODE_ENV === 'production' ? '/SimbirSoft-Internship/' : '/',
   configureWebpack: {
     resolve: {
       alias: {
