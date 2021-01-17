@@ -1,14 +1,17 @@
 {
   "name": "sst-1",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "homepage": "http://JuliettKhar.github.io/SimbirSoft-Internship",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "lint-debug": "eslint --debug src/",
     "lint:write": "eslint --debug src/ --fix",
-    "prettier": "prettier --write src/**/*.js"
+    "prettier": "prettier --write src/**/*.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -17,6 +20,7 @@
     "lint-staged": "^10.5.3",
     "regenerator-runtime": "^0.13.7",
     "vue": "^2.6.11",
+    "vue-country-flag": "^2.0.3",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
   },
@@ -36,6 +40,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
+    "gh-pages": "^3.1.0",
     "node-sass": "^4.12.0",
     "prettier": "^2.2.1",
     "sass-loader": "^8.0.2",

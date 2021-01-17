@@ -6,6 +6,7 @@
           :filters="filters"
           @search="searchTeamsByName"
           @pick="searchTeamsByYear"
+          @clear="clearPicker"
         />
       </el-col>
     </el-row>
@@ -29,20 +30,17 @@
 <script>
   import ListFilters from '@/components/Common/ListFilters';
   import TeamsGroupTable from '@/components/Teams/TeamsGroupTable';
-  import { updateQuery } from '@/utils/functions';
+  import { updateQuery, calculatePages } from '@/utils/functions';
 
   export default {
     name: 'GroupsList',
-    components: {
-      ListFilters,
-      TeamsGroupTable,
-    },
+    components: { ListFilters, TeamsGroupTable },
     data() {
       const query = this.$route?.query || {};
       return {
         filters: {
           searchInput: query?.searchInput || null,
-          pickerData: query?.pickerData || null,
+          pickerData: query?.season || null,
           pageT: query?.pageT || 1,
         },
         groupsData: [],
@@ -63,41 +61,47 @@
         },
       },
       total() {
-        return this.groupsList.length;
+        return this.$store.state.groups.teamsList?.count || 0;
       },
     },
     mounted() {
       this.getGroupsListData();
     },
+    watch: {
+      filters: {
+        deep: true,
+        handler: () => 'update',
+      },
+    },
     methods: {
       updateQuery,
-      getGroupsListData() {
+      calculatePages,
+      update(val) {
         const { id } = this.$route.params;
-        const { page, ...query } = this.$route.query;
-
         this.$store
-          .dispatch('groups/GET_TEAMS_LIST', { id })
+          .dispatch('groups/GET_TEAMS_LIST', { id, params: { ...val } })
           .then(() => this.initList());
-
-        /*
-         * if (JSON.stringify(this.$route.query) !== '{}') {
-         *   this.groupsData = this.filterGroupsByYear(
-         *     this.$route.query.pickerData,
-         *   );
-         * } else {
-         *   this.groupsData = Object.assign([], this.groupsList);
-         * }
-         */
+      },
+      getGroupsListData() {
+        const { pageT, ...query } = this.$route.query;
+        this.update(query);
       },
       initList() {
-        const start = (this.currentPage - 1) * this.limit;
-        const end = start + this.limit;
+        const { start, end } = this.calculatePages(
+          this.currentPage,
+          this.limit,
+        );
 
-        this.groupsListData = this.groupsList.slice(start, end);
+        this.groupsListData = Object.assign(
+          [],
+          this.groupsList.slice(start, end),
+        );
       },
       searchTeamsByName() {
-        const query = Object.assign({}, this.updateQuery(this.filters));
-        this.groupsList.filter(group =>
+        const query = this.updateQuery({ ...this.$route.query });
+        query.searchInput = this.filters.searchInput;
+
+        this.groupsListData = this.groupsList.filter(group =>
           group.shortName
             .toLowerCase()
             .includes(this.filters.searchInput.toLowerCase()),
@@ -105,45 +109,31 @@
         this.$router.push({ query });
       },
       searchTeamsByYear() {
-        const query = Object.assign({}, this.updateQuery(this.filters));
-        const { id } = this.$route.params;
-        query.pickerData = String(
-          new Date(this.filters.pickerData).getFullYear(),
-        );
-        const params = {
-          season: query.pickerData,
-        };
+        const query = this.updateQuery({ ...this.$route.query });
+        query.season = String(new Date(this.filters.pickerData).getFullYear());
 
-        this.$store.dispatch('groups/GET_TEAMS_LIST', { id, params });
+        this.update({ season: query.season });
         this.$router.push({ query });
       },
-      filterGroupsByYear(year) {
-        const { pickerData, searchInput } = this.$route.query;
-        /*
-         * return this.groupsData.filter(group => {
-         *   if (!pickerData || !searchInput) {
-         *     return (
-         *       group.shortName.toLowerCase().includes(searchInput.toLowerCase()) ||
-         *       group.shortName.toLowerCase().includes(pickerData.toLowerCase())
-         *   }
-         *   return group.shortName.toLowerCase().includes(searchInput.toLowerCase())
-         * })
-         */
-      },
       onPaginationChange() {
-        const query = Object.assign(
-          {},
-          this.updateQuery({ ...this.$route.query }),
-        );
+        const query = this.updateQuery({ ...this.$route.query });
         query.pageT = this.currentPage;
-        const start = (this.currentPage - 1) * this.limit;
-        const end = start + this.limit;
+        const { start, end } = this.calculatePages(
+          this.currentPage,
+          this.limit,
+        );
 
         this.groupsListData = Object.assign(
           [],
           this.groupsList.slice(start, end),
         );
         this.$router.push({ query });
+      },
+      clearPicker() {
+        this.$router.push({});
+        this.filters.pickerData = '';
+        this.filters.searchInput = '';
+        this.update({});
       },
     },
   };

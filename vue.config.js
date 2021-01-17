@@ -1,7 +1,8 @@
 const path = require('path');
 
 module.exports = {
-  publicPath: '/',
+  publicPath:
+    process.env.NODE_ENV === 'production' ? '/SimbirSoft-Internship/' : '/',
   configureWebpack: {
     resolve: {
       alias: {
@@ -39,12 +40,9 @@ module.exports = {
           includePaths: [path.resolve(__dirname, 'src/scss/core/')],
           indentedSyntax: false,
         },
-        /*
-         * prependData: `
-         *   @import "@/assets/scss/mixins/index.scss";
-         *   @import "@/assets/scss/core/_variables.scss";
-         * `,
-         */
+        prependData: `
+          @import "@/assets/scss/core/mixins.scss";
+         `,
       },
     },
   },

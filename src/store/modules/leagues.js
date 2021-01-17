@@ -2,7 +2,7 @@ import { apiServiceLeagues } from '@/api/leagues';
 
 const state = () => ({
   leaguesList: [],
-  leagueCalendar: [],
+  leagueCalendar: {},
   leagueOverview: [],
 });
 const mutations = {
@@ -24,10 +24,9 @@ const actions = {
   async GET_LEAGUES_BY_ID({ commit }, payload) {
     const { data } = await apiServiceLeagues.getLeagueById(payload);
     const matches = data.matches.flat();
-    commit('SET_LEAGUE_CALENDAR', matches);
+    commit('SET_LEAGUE_CALENDAR', { matches, total: data.count });
     commit('SET_LEAGUE_OVERVIEW', data.competition);
   },
-  FILTERED_LEAGUE_DATA({ commit }, query) {},
 };
 
 export const leagues = {

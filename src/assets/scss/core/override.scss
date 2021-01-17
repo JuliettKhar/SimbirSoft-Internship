@@ -46,6 +46,7 @@
   color: #333;
   line-height: 60px;
   text-align: left;
+  height: 56px;
 
   & i {
     color: #fff;
@@ -77,4 +78,10 @@
 
 .el-input {
   width: 100% !important;
+}
+
+.el-pagination {
+  @include xxs {
+    overflow-x: auto;
+  }
 }

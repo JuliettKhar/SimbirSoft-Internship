@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="teamsData">
+  <el-table v-loading="loading" :data="teamsData">
     <el-table-column prop="group" label="Group" width="140"></el-table-column>
     <el-table-column prop="awayTeam" label="Away Team" width="120">
       <template slot-scope="scope">
@@ -43,6 +43,10 @@
       teamsData: {
         type: Array,
         default: () => [],
+      },
+      loading: {
+        type: Boolean,
+        default: false,
       },
     },
     methods: {

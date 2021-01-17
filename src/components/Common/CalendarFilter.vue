@@ -36,6 +36,7 @@
       display: flex;
       align-items: flex-start;
       flex-wrap: wrap;
+      justify-content: start;
       width: fit-content;
       margin-bottom: 20px;
 
@@ -43,6 +44,16 @@
         margin-right: 10px;
         margin-bottom: 10px;
       }
+
+      @include xs {
+        justify-content: center;
+      }
+    }
+  }
+
+  .el-range-editor.el-input__inner {
+    @include xs {
+      width: 100% !important;
     }
   }
 </style>
