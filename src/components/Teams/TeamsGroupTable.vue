@@ -59,6 +59,14 @@
       grid-template-columns: repeat(4, 1fr);
       grid-template-rows: auto;
       grid-gap: 1rem;
+
+      @include xs {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      @include xxs {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     p {

@@ -84,7 +84,6 @@
       changeTab({ name }) {
         this.activeName = name;
         this.$router.push({ name });
-        this.handleClick();
       },
     },
   };

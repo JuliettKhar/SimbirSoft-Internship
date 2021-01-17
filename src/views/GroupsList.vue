@@ -40,7 +40,7 @@
       return {
         filters: {
           searchInput: query?.searchInput || null,
-          pickerData: query?.pickerData || null,
+          pickerData: query?.season || null,
           pageT: query?.pageT || 1,
         },
         groupsData: [],
@@ -98,7 +98,9 @@
         );
       },
       searchTeamsByName() {
-        const query = Object.assign({}, this.updateQuery(this.filters));
+        const query = this.updateQuery({ ...this.$route.query });
+        query.searchInput = this.filters.searchInput;
+
         this.groupsListData = this.groupsList.filter(group =>
           group.shortName
             .toLowerCase()

@@ -39,12 +39,9 @@ module.exports = {
           includePaths: [path.resolve(__dirname, 'src/scss/core/')],
           indentedSyntax: false,
         },
-        /*
-         * prependData: `
-         *   @import "@/assets/scss/mixins/index.scss";
-         *   @import "@/assets/scss/core/_variables.scss";
-         * `,
-         */
+        prependData: `
+          @import "@/assets/scss/core/mixins.scss";
+         `,
       },
     },
   },

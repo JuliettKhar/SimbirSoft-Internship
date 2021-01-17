@@ -53,7 +53,7 @@
       return {
         filters: {
           searchInput: query?.searchInput || null,
-          pickerData: query?.pickerData || null,
+          pickerData: query?.season || null,
           page: query?.page || 1,
         },
         leaguesData: [],
@@ -101,7 +101,9 @@
         this.leaguesData = this.leaguesList.slice(start, end);
       },
       searchLeagueByName() {
-        const query = this.updateQuery(this.filters);
+        const query = this.updateQuery({ ...this.$route.query });
+        query.searchInput = this.filters.searchInput;
+
         const filtered = this.leaguesData.filter(league => {
           return league.area.name
             .toLowerCase()
@@ -112,12 +114,10 @@
         this.$router.push({ query });
       },
       searchLeagueByYear() {
-        const query = Object.assign({}, this.updateQuery(this.filters));
-        query.pickerData = String(
-          new Date(this.filters.pickerData).getFullYear(),
-        );
+        const query = this.updateQuery({ ...this.$route.query });
+        query.season = String(new Date(this.filters.pickerData).getFullYear());
 
-        const filteredList = this.filterListByYear(query.pickerData);
+        const filteredList = this.filterListByYear(query.season);
         this.leaguesData = Object.assign([], filteredList);
         this.$router.push({ query });
       },

@@ -20,7 +20,7 @@
             class="leagues-list__flag"
             :src="scope.row.area.ensignUrl"
           />
-          <span>{{ scope.row.area.name }}</span>
+          <span style="white-space: nowrap">{{ scope.row.area.name }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="code" label="Code" width="90px">
@@ -29,7 +29,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="name" label="Name"></el-table-column>
-      <el-table-column prop="currentSeason" label="Current Season">
+      <el-table-column
+        prop="currentSeason"
+        label="Current Season"
+        width="150px"
+      >
         <template slot-scope="scope">
           <ul class="leagues-list__season">
             <li v-if="formatSeasonDate(scope.row.currentSeason)">
