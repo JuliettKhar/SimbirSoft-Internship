@@ -33,15 +33,17 @@
 </template>
 
 <script>
-  import LeagueCalendar from './LeagueCalendar';
-  import GroupsList from './GroupsList';
   import { updateQuery } from '../utils/functions';
 
   export default {
     name: 'LeaguesOverview',
     components: {
-      LeagueCalendar,
-      GroupsList,
+      LeagueCalendar: () =>
+        import(
+          /* webpackChunkName: "leagues-calendar" */ '../views/LeagueCalendar.vue'
+        ),
+      GroupsList: () =>
+        import(/* webpackChunkName: "groups-list" */ '../views/GroupsList.vue'),
     },
     data() {
       const activeName = this.$route?.name || 'league-calendar';

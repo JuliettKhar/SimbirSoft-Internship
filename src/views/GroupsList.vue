@@ -60,8 +60,13 @@
           this.groupsData = val;
         },
       },
-      total() {
-        return this.$store.state.groups.teamsList?.count || 0;
+      total: {
+        get() {
+          return this.$store.state.groups?.listTotalCount || 0;
+        },
+        set(val) {
+          this.$store.commit('groups/SET_LIST_TOTAL_COUNT', val);
+        },
       },
     },
     mounted() {
@@ -107,6 +112,7 @@
             .includes(this.filters.searchInput.toLowerCase()),
         );
         this.$router.push({ query });
+        this.total = this.getGroupsListData.length;
       },
       searchTeamsByYear() {
         const query = this.updateQuery({ ...this.$route.query });
