@@ -24,22 +24,20 @@ axios.interceptors.request.use(
     return config;
   },
   error => {
-    Notification.error({
-      message: error.response.data.message,
-    });
     return Promise.reject(error);
   },
 );
 
 axios.interceptors.response.use(
-  response => {
-    return response;
-  },
+  response => response,
   error => {
-    Notification.error({
-      message: error.response.data.message,
-    });
-    return Promise.reject(error.response.data);
+    if (error.response.status !== 404 && error.response.status !== 403) {
+      Notification.error({
+        message: error.response.data.message,
+      });
+    } else {
+      throw new Error(error);
+    }
   },
 );
 
