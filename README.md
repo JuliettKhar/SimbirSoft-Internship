@@ -1,5 +1,5 @@
 # SimbirSoft-Internship
-Use Vuex, Vue-router, axios, Element-ui
+Use Vuex, Vue-router, axios, Element-ui.
 API: www.football-data.org free plan
 
 routes:
