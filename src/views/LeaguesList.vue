@@ -74,8 +74,13 @@
           this.leaguesData = val;
         },
       },
-      total() {
-        return this.leaguesList.length;
+      total: {
+        get() {
+          return this.$store.state.leagues?.leaguesListTotalCount || 0;
+        },
+        set(val) {
+          this.$store.commit('leagues/SET_LEAGUES_LIST_TOTAL_COUNT', val);
+        },
       },
     },
     mounted() {
@@ -104,7 +109,7 @@
         const query = this.updateQuery({ ...this.$route.query });
         query.searchInput = this.filters.searchInput;
 
-        const filtered = this.leaguesData.filter(league => {
+        const filtered = this.leaguesList.filter(league => {
           return league.area.name
             .toLowerCase()
             .includes(this.filters.searchInput.toLowerCase());
@@ -112,6 +117,7 @@
 
         this.leaguesListData = Object.assign([], filtered);
         this.$router.push({ query });
+        this.total = this.leaguesListData.length;
       },
       searchLeagueByYear() {
         const query = this.updateQuery({ ...this.$route.query });
@@ -120,6 +126,7 @@
         const filteredList = this.filterListByYear(query.season);
         this.leaguesData = Object.assign([], filteredList);
         this.$router.push({ query });
+        this.total = this.leaguesListData.length;
       },
       filterListByYear(year) {
         return this.leaguesList.filter(league => {
