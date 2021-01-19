@@ -4,7 +4,7 @@ API: www.football-data.org free plan
 
 routes:
 ```
- /leagues-list - fontend filtration
+ /leagues-list - frontend filtration
  /groups-list/ - query { season }
  /leagues-calendar/:id - query { dateFrom, dateTo }
  /group-calendar/:id - query { dateFrom, dateTo }
