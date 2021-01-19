@@ -24,9 +24,6 @@ axios.interceptors.request.use(
     return config;
   },
   error => {
-    Notification.error({
-      message: error.response.data.message,
-    });
     return Promise.reject(error);
   },
 );
@@ -39,7 +36,7 @@ axios.interceptors.response.use(
         message: error.response.data.message,
       });
     } else {
-      return Promise.reject(error);
+      throw new Error(error);
     }
   },
 );
